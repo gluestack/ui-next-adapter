@@ -61,6 +61,8 @@
   "dependencies": {
     "@dank-style/react": "^0.1.35",
     "next": "^13.1.6",
+    "next-compose-plugins": "^2.2.1",
+    "next-transpile-modules": "^10.0.0",
     "react-native-web": "^0.18.12"
   }
 }
