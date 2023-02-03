@@ -1,5 +1,5 @@
 type ConfigType = {
-  dependencies: Array<any>;
+  transpileModules: Array<any>;
   plugins: Array<any>;
   nextConfig: any;
 };
@@ -10,22 +10,22 @@ type withGluestackParam = {
 };
 
 export default function withGluestack(
-  config: ConfigType = { dependencies: [], plugins: [], nextConfig: {} },
+  config: ConfigType = { transpileModules: [], plugins: [], nextConfig: {} },
   phase: Array<any> = []
 ): withGluestackParam {
-  let dependencies = [
+  let transpileModules = [
     'react-native-web',
     '@dank-style/react',
     '@dank-style/css-injector',
-    '@gluestack/next-adapter',
+    '@gluestack/ui-next-adapter',
   ];
 
-  if (config.dependencies !== undefined) {
-    dependencies = [...dependencies, ...config.dependencies];
+  if (config.transpileModules !== undefined) {
+    transpileModules = [...transpileModules, ...config.transpileModules];
   }
 
   const withPlugins = require('next-compose-plugins');
-  const withTM = require('next-transpile-modules')(dependencies);
+  const withTM = require('next-transpile-modules')(transpileModules);
   return withPlugins(
     [withTM, ...(config.plugins || [])],
     {
