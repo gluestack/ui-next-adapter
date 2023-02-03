@@ -1,1 +1,1 @@
-export { default as withGluestack } from './withGluestack';
+export { default as withGluestackUI } from './withGluestack';
