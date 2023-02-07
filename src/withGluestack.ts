@@ -392,8 +392,6 @@ export default function withGluestackUI({ transpileModules, nextConfig }: any) {
     ])
   );
 
-  console.log(gluestackUITranspileModules);
-
   const withPlugins = require('next-compose-plugins');
   const withTM = require('next-transpile-modules')([
     ...gluestackUITranspileModules,
