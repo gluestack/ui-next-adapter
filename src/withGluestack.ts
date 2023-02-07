@@ -1,4 +1,5 @@
 export default function withGluestackUI({ transpileModules, nextConfig }: any) {
+  console.log('hello');
   let gluestackUITranspileModules = Array.from(
     new Set([
       'react-native-web',
@@ -6,12 +7,12 @@ export default function withGluestackUI({ transpileModules, nextConfig }: any) {
       '@dank-style/css-injector',
       '@gluestack/ui-next-adapter',
       '@universa11y/provider',
-      '@react-native-aria/overlays',
-      '@universa11y/overlay',
-      '@react-native-aria/utils',
-      '@universa11y/react-native-aria',
-      '@universa11y/toast',
-      '@universa11y/transitions',
+      // '@react-native-aria/overlays',
+      // '@universa11y/overlay',
+      // '@react-native-aria/utils',
+      // '@universa11y/react-native-aria',
+      // '@universa11y/toast',
+      // '@universa11y/transitions',
       ...transpileModules,
     ])
   );
