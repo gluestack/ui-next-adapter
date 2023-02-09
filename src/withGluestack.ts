@@ -1,6 +1,9 @@
 const fs = require('fs-extra');
 
-export default function withGluestackUI({ transpileModules, nextConfig }: any) {
+export default function withGluestackUI(
+  nextConfig: any = {},
+  transpileModules: any = []
+) {
   const currDir = process.cwd();
 
   const packageJsonPath = `${currDir}/package.json`;
@@ -391,6 +394,8 @@ export default function withGluestackUI({ transpileModules, nextConfig }: any) {
       ...transpileModules,
     ])
   );
+
+  console.log(gluestackUITranspileModules);
 
   const withPlugins = require('next-compose-plugins');
   const withTM = require('next-transpile-modules')([
