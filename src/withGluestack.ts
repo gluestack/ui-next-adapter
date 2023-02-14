@@ -1,10 +1,7 @@
 const path = require('path');
 import { getDependenciesFromNodeModules, checkIfWorkspace } from './utils';
 
-export default function withGluestackUI(
-  nextConfig: any = {},
-  transpileModules: any = []
-) {
+export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
 
   const metaWorkspace = checkIfWorkspace(currDir);
@@ -31,22 +28,21 @@ export default function withGluestackUI(
       '@gluestack/ui-next-adapter',
       ...rootDependencyList,
       ...parentDependencyList,
-      ...transpileModules,
+      ...(nextConfig.transpilePackages || []),
     ])
   );
 
-  const withPlugins = require('next-compose-plugins');
-  const withTM = require('next-transpile-modules')([
-    ...gluestackUITranspileModules,
-  ]);
-
   const updatedNextConfig = {
     ...nextConfig,
+    transpilePackages: gluestackUITranspileModules,
     webpack: (config: any) => {
+      config = nextConfig.webpack ? nextConfig.webpack(config) : config;
+
       config.resolve.alias = {
         ...(config.resolve.alias || {}),
         'react-native$': 'react-native-web',
       };
+
       config.resolve.extensions = [
         '.web.js',
         '.web.ts',
@@ -63,5 +59,5 @@ export default function withGluestackUI(
     },
   };
 
-  return withPlugins([withTM], updatedNextConfig);
+  return updatedNextConfig;
 }
