@@ -22,6 +22,7 @@ export default function withGluestackUI(nextConfig: any = {}) {
 
   let gluestackUITranspileModules = Array.from(
     new Set([
+      'react-native',
       'react-native-web',
       '@dank-style/react',
       '@dank-style/css-injector',
