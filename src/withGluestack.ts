@@ -7,7 +7,7 @@ export default function withGluestackUI(nextConfig: any = {}) {
   const metaWorkspace = checkIfWorkspace(currDir);
 
   const rootDependencyList = getDependenciesFromNodeModules(currDir, [
-    '@universa11y',
+    '@gluestack-ui',
     '@react-native-aria',
   ]);
 
@@ -16,7 +16,7 @@ export default function withGluestackUI(nextConfig: any = {}) {
   if (metaWorkspace.isWorkspace) {
     parentDependencyList = getDependenciesFromNodeModules(
       path.resolve(currDir, '..'),
-      ['@universa11y', '@react-native-aria']
+      ['@gluestack-ui', '@react-native-aria']
     );
   }
 
