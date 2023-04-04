@@ -1,5 +1,5 @@
-const path = require('path');
-import { getDependenciesFromNodeModules, checkIfWorkspace } from './utils';
+const path = require("path");
+import { getDependenciesFromNodeModules, checkIfWorkspace } from "./utils";
 
 export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
@@ -7,26 +7,23 @@ export default function withGluestackUI(nextConfig: any = {}) {
   const metaWorkspace = checkIfWorkspace(currDir);
 
   const rootDependencyList = getDependenciesFromNodeModules(currDir, [
-    '@gluestack-ui',
-    '@react-native-aria',
+    "@gluestack-ui",
+    "@react-native-aria",
   ]);
 
   let parentDependencyList = [];
 
   if (metaWorkspace.isWorkspace) {
     parentDependencyList = getDependenciesFromNodeModules(
-      path.resolve(currDir, '..'),
-      ['@gluestack-ui', '@react-native-aria']
+      path.resolve(currDir, ".."),
+      ["@gluestack-ui", "@react-native-aria", "@dank-style", "@gluestack"]
     );
   }
 
   let gluestackUITranspileModules = Array.from(
     new Set([
-      'react-native',
-      'react-native-web',
-      '@dank-style/react',
-      '@dank-style/css-injector',
-      '@gluestack/ui-next-adapter',
+      "react-native",
+      "react-native-web",
       ...rootDependencyList,
       ...parentDependencyList,
       ...(nextConfig.transpilePackages || []),
@@ -41,19 +38,19 @@ export default function withGluestackUI(nextConfig: any = {}) {
 
       config.resolve.alias = {
         ...(config.resolve.alias || {}),
-        'react-native$': 'react-native-web',
+        "react-native$": "react-native-web",
       };
 
       config.resolve.extensions = [
-        '.web.js',
-        '.web.ts',
-        '.web.tsx',
+        ".web.js",
+        ".web.ts",
+        ".web.tsx",
         ...config.resolve.extensions,
       ];
 
       config.module.rules.push({
         test: /\.ttf$/,
-        loader: 'url-loader',
+        loader: "url-loader",
       });
 
       return config;
