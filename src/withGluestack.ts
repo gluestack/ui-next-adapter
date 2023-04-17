@@ -1,5 +1,5 @@
 import { getDependenciesFromNodeModules } from './utils';
-// const findWorkspaceRoot = require('find-yarn-workspace-root');
+const findWorkspaceRoot = require('find-yarn-workspace-root');
 
 export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
@@ -14,10 +14,10 @@ export default function withGluestackUI(nextConfig: any = {}) {
     // '@gluestack',
   ]);
 
-  // const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
+  const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
   // const metaWorkspace = checkIfWorkspace(currDir);
 
-  // let parentDependencyList = [];
+  let parentDependencyList = [];
 
   // if (metaWorkspace.isWorkspace) {
   //   parentDependencyList = getDependenciesFromNodeModules(
@@ -25,14 +25,16 @@ export default function withGluestackUI(nextConfig: any = {}) {
   //     ['@gluestack-ui', '@react-native-aria']
   //   );
   // }
-  // parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
-  //   '@gluestack-ui',
-  //   '@react-native-aria',
-  //   '@legendapp',
-  //   '@expo/html-elements',
-  //   'gluestack',
-  //   '@dank-style',
-  // ]);
+  if (workspaceRoot) {
+    parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
+      '@gluestack-ui',
+      '@react-native-aria',
+      '@legendapp',
+      '@expo/html-elements',
+      'gluestack',
+      '@dank-style',
+    ]);
+  }
 
   let gluestackUITranspileModules = Array.from(
     new Set([
@@ -44,7 +46,7 @@ export default function withGluestackUI(nextConfig: any = {}) {
       // '@legendapp/motion',
       '@gluestack/ui-next-adapter',
       ...rootDependencyList,
-      // ...parentDependencyList,
+      ...parentDependencyList,
       ...(nextConfig.transpilePackages || []),
     ])
   );
