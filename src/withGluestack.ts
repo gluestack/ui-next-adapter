@@ -1,10 +1,9 @@
+import { checkIfWorkspace, getDependenciesFromNodeModules } from './utils';
+const findWorkspaceRoot = require('find-yarn-workspace-root');
 const path = require('path');
-import { getDependenciesFromNodeModules, checkIfWorkspace } from './utils';
 
 export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
-
-  const metaWorkspace = checkIfWorkspace(currDir);
 
   const rootDependencyList = getDependenciesFromNodeModules(currDir, [
     '@gluestack-ui',
@@ -12,7 +11,11 @@ export default function withGluestackUI(nextConfig: any = {}) {
     '@dank-style',
     '@gluestack',
     '@expo',
+    '@legendapp',
   ]);
+
+  const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
+  const metaWorkspace = checkIfWorkspace(currDir);
 
   let parentDependencyList = [];
 
@@ -25,8 +28,20 @@ export default function withGluestackUI(nextConfig: any = {}) {
         '@dank-style',
         '@gluestack',
         '@expo',
+        '@legendapp',
       ]
     );
+  }
+
+  if (workspaceRoot) {
+    parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
+      '@gluestack-ui',
+      '@react-native-aria',
+      '@legendapp',
+      '@expo/html-elements',
+      'gluestack',
+      '@dank-style',
+    ]);
   }
 
   let gluestackUITranspileModules = Array.from(
