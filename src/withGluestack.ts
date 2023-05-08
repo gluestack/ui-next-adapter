@@ -1,30 +1,38 @@
-import { getDependenciesFromNodeModules } from './utils';
+import { checkIfWorkspace, getDependenciesFromNodeModules } from './utils';
 const findWorkspaceRoot = require('find-yarn-workspace-root');
+const path = require('path');
 
 export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
 
-  // const metaWorkspace = checkIfWorkspace(currDir);
-
   const rootDependencyList = getDependenciesFromNodeModules(currDir, [
     '@gluestack-ui',
     '@react-native-aria',
-    '@legendapp',
     '@dank-style',
-    // '@gluestack',
+    '@gluestack',
+    '@expo',
+    '@legendapp',
   ]);
 
   const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
-  // const metaWorkspace = checkIfWorkspace(currDir);
+  const metaWorkspace = checkIfWorkspace(currDir);
 
   let parentDependencyList = [];
 
-  // if (metaWorkspace.isWorkspace) {
-  //   parentDependencyList = getDependenciesFromNodeModules(
-  //     path.resolve(currDir, '..'),
-  //     ['@gluestack-ui', '@react-native-aria']
-  //   );
-  // }
+  if (metaWorkspace.isWorkspace) {
+    parentDependencyList = getDependenciesFromNodeModules(
+      path.resolve(currDir, '..'),
+      [
+        '@gluestack-ui',
+        '@react-native-aria',
+        '@dank-style',
+        '@gluestack',
+        '@expo',
+        '@legendapp',
+      ]
+    );
+  }
+
   if (workspaceRoot) {
     parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
       '@gluestack-ui',
@@ -40,11 +48,6 @@ export default function withGluestackUI(nextConfig: any = {}) {
     new Set([
       'react-native',
       'react-native-web',
-      // '@dank-style/react',
-      // '@dank-style/animation-plugin',
-      // '@dank-style/css-injector',
-      // '@legendapp/motion',
-      '@gluestack/ui-next-adapter',
       ...rootDependencyList,
       ...parentDependencyList,
       ...(nextConfig.transpilePackages || []),
