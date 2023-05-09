@@ -1,4 +1,8 @@
-import { checkIfWorkspace, getDependenciesFromNodeModules } from './utils';
+import {
+  checkIfWorkspace,
+  getDependenciesFromNodeModules,
+  getExactDependenciesFromNodeModules,
+} from './utils';
 const findWorkspaceRoot = require('find-yarn-workspace-root');
 const path = require('path');
 
@@ -14,10 +18,17 @@ export default function withGluestackUI(nextConfig: any = {}) {
     '@legendapp',
   ]);
 
+  const rootExactDependencyList = getExactDependenciesFromNodeModules(currDir, [
+    'react-native',
+    'react-native-web',
+    'react-native-svg',
+  ]);
+
   const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
   const metaWorkspace = checkIfWorkspace(currDir);
 
   let parentDependencyList = [];
+  let parentExactDependencyList = [];
 
   if (metaWorkspace.isWorkspace) {
     parentDependencyList = getDependenciesFromNodeModules(
@@ -31,6 +42,10 @@ export default function withGluestackUI(nextConfig: any = {}) {
         '@legendapp',
       ]
     );
+    parentExactDependencyList = getExactDependenciesFromNodeModules(
+      path.resolve(currDir, '..'),
+      ['react-native', 'react-native-web', 'react-native-svg']
+    );
   }
 
   if (workspaceRoot) {
@@ -42,14 +57,18 @@ export default function withGluestackUI(nextConfig: any = {}) {
       'gluestack',
       '@dank-style',
     ]);
+    parentExactDependencyList = getExactDependenciesFromNodeModules(
+      workspaceRoot,
+      ['react-native', 'react-native-web', 'react-native-svg']
+    );
   }
 
   let gluestackUITranspileModules = Array.from(
     new Set([
-      'react-native',
-      'react-native-web',
       ...rootDependencyList,
       ...parentDependencyList,
+      ...rootExactDependencyList,
+      ...parentExactDependencyList,
       ...(nextConfig.transpilePackages || []),
     ])
   );
