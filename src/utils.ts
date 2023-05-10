@@ -1,6 +1,45 @@
 const fs = require('fs-extra');
 const path = require('path');
 
+const isIncludedInDependency = (arr: any[], inputString: string) => {
+  return arr.includes(inputString);
+};
+
+function traverseFolder(
+  dir: any,
+  prefixes: any[] = [],
+  deps: Set<any> = new Set()
+) {
+  const files = fs.readdirSync(dir);
+  files.forEach((file: any) => {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat.isDirectory()) {
+      if (isIncludedInDependency(prefixes, file)) {
+        deps.add(file);
+      } else {
+        traverseFolder(filePath, prefixes, deps);
+      }
+    }
+  });
+  return deps;
+}
+
+const getExactDependenciesFromNodeModules = (
+  dir: any,
+  prefixes: any[] = []
+) => {
+  const nodeModulesDirectory = path.join(dir, 'node_modules');
+  const dependenciesSet = traverseFolder(nodeModulesDirectory, prefixes);
+
+  const dependencyList: any = [];
+  dependenciesSet.forEach(dependency => {
+    dependencyList.push(dependency);
+  });
+
+  return dependencyList;
+};
+
 const getDependenciesFromNodeModules = (
   dir: any,
   nodeModulePackages: any = []
@@ -67,4 +106,8 @@ const checkIfWorkspace = (currDir: any) => {
   return metadata;
 };
 
-export { getDependenciesFromNodeModules, checkIfWorkspace };
+export {
+  getDependenciesFromNodeModules,
+  checkIfWorkspace,
+  getExactDependenciesFromNodeModules,
+};
