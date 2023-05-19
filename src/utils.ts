@@ -30,13 +30,21 @@ const getExactDependenciesFromNodeModules = (
   prefixes: any[] = []
 ) => {
   const nodeModulesDirectory = path.join(dir, 'node_modules');
-  const dependenciesSet = traverseFolder(nodeModulesDirectory, prefixes);
-
+  
   const dependencyList: any = [];
-  dependenciesSet.forEach(dependency => {
-    dependencyList.push(dependency);
+    
+  fs.access(directoryPath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.log('Directory does not exist');
+    } else {
+      console.log('Directory exists');
+     const dependenciesSet = traverseFolder(nodeModulesDirectory, prefixes);
+      dependenciesSet.forEach(dependency => {
+        dependencyList.push(dependency);
+      });
+    }
   });
-
+    
   return dependencyList;
 };
 
