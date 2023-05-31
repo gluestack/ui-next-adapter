@@ -6,23 +6,33 @@ import {
 const findWorkspaceRoot = require('find-yarn-workspace-root');
 const path = require('path');
 
+const gluestackDeps = [
+  '@gluestack-ui',
+  '@react-native-aria',
+  '@gluestack-style',
+  '@gluestack',
+  '@expo',
+  '@legendapp',
+];
+
+const reactNativeDeps = [
+  'react-native',
+  'react-native-web',
+  'react-native-svg',
+];
+
 export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
 
-  const rootDependencyList = getDependenciesFromNodeModules(currDir, [
-    '@gluestack-ui',
-    '@react-native-aria',
-    '@dank-style',
-    '@gluestack',
-    '@expo',
-    '@legendapp',
-  ]);
+  const rootDependencyList = getDependenciesFromNodeModules(
+    currDir,
+    gluestackDeps
+  );
 
-  const rootExactDependencyList = getExactDependenciesFromNodeModules(currDir, [
-    'react-native',
-    'react-native-web',
-    'react-native-svg',
-  ]);
+  const rootExactDependencyList = getExactDependenciesFromNodeModules(
+    currDir,
+    reactNativeDeps
+  );
 
   const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
   const metaWorkspace = checkIfWorkspace(currDir);
@@ -33,33 +43,21 @@ export default function withGluestackUI(nextConfig: any = {}) {
   if (metaWorkspace.isWorkspace) {
     parentDependencyList = getDependenciesFromNodeModules(
       path.resolve(currDir, '..'),
-      [
-        '@gluestack-ui',
-        '@react-native-aria',
-        '@dank-style',
-        '@gluestack',
-        '@expo',
-        '@legendapp',
-      ]
+      gluestackDeps
     );
     parentExactDependencyList = getExactDependenciesFromNodeModules(
       path.resolve(currDir, '..'),
-      ['react-native', 'react-native-web', 'react-native-svg']
+      reactNativeDeps
     );
   }
 
   if (workspaceRoot) {
-    parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
-      '@gluestack-ui',
-      '@react-native-aria',
-      '@legendapp',
-      '@expo/html-elements',
-      'gluestack',
-      '@dank-style',
-    ]);
-    parentExactDependencyList = getExactDependenciesFromNodeModules(
+    parentDependencyList = getDependenciesFromNodeModules(
       workspaceRoot,
-      ['react-native', 'react-native-web', 'react-native-svg']
+      gluestackDeps
+    );
+    parentExactDependencyList = getExactDependenciesFromNodeModules(
+      workspaceRoot
     );
   }
 
