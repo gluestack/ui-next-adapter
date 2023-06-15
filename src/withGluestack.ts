@@ -25,6 +25,7 @@ export default function withGluestackUI(nextConfig: any = {}) {
   //     ['@gluestack-ui', '@react-native-aria']
   //   );
   // }
+
   if (workspaceRoot) {
     parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
       '@gluestack-ui',
@@ -32,7 +33,8 @@ export default function withGluestackUI(nextConfig: any = {}) {
       '@legendapp',
       '@expo/html-elements',
       'gluestack',
-      '@dank-style',
+      '@gluestack-style/react',
+      '@gluestack-style/animation-plugin',
     ]);
   }
 
