@@ -1,23 +1,55 @@
-import { getDependenciesFromNodeModules } from './utils';
+import {
+  checkIfWorkspace,
+  getDependenciesFromNodeModules,
+  getExactDependenciesFromNodeModules,
+} from './utils';
 const findWorkspaceRoot = require('find-yarn-workspace-root');
+const path = require('path');
+
+const gluestackDeps = [
+  '@gluestack-ui',
+  '@react-native-aria',
+  '@gluestack-style',
+  '@gluestack',
+  '@expo',
+  '@legendapp',
+];
+
+const reactNativeDeps = [
+  'react-native',
+  'react-native-web',
+  'react-native-svg',
+];
 
 export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
 
-  // const metaWorkspace = checkIfWorkspace(currDir);
+  const rootDependencyList = getDependenciesFromNodeModules(
+    currDir,
+    gluestackDeps
+  );
 
-  const rootDependencyList = getDependenciesFromNodeModules(currDir, [
-    '@gluestack-ui',
-    '@react-native-aria',
-    '@legendapp',
-    '@dank-style',
-    // '@gluestack',
-  ]);
+  const rootExactDependencyList = getExactDependenciesFromNodeModules(
+    currDir,
+    reactNativeDeps
+  );
 
   const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
-  // const metaWorkspace = checkIfWorkspace(currDir);
+  const metaWorkspace = checkIfWorkspace(currDir);
 
   let parentDependencyList = [];
+  let parentExactDependencyList = [];
+
+  if (metaWorkspace.isWorkspace) {
+    parentDependencyList = getDependenciesFromNodeModules(
+      path.resolve(currDir, '..'),
+      gluestackDeps
+    );
+    parentExactDependencyList = getExactDependenciesFromNodeModules(
+      path.resolve(currDir, '..'),
+      reactNativeDeps
+    );
+  }
 
   // if (metaWorkspace.isWorkspace) {
   //   parentDependencyList = getDependenciesFromNodeModules(
@@ -26,29 +58,31 @@ export default function withGluestackUI(nextConfig: any = {}) {
   //   );
   // }
 
+  // if (workspaceRoot) {
+  //   parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
+  //     '@gluestack-ui',
+  //     '@react-native-aria',
+  //     '@legendapp',
+  //     '@expo/html-elements',
+  //     'gluestack',
+  //   ]);
+  // }
   if (workspaceRoot) {
-    parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
-      '@gluestack-ui',
-      '@react-native-aria',
-      '@legendapp',
-      '@expo/html-elements',
-      'gluestack',
-      '@gluestack-style/react',
-      '@gluestack-style/animation-plugin',
-    ]);
+    parentDependencyList = getDependenciesFromNodeModules(
+      workspaceRoot,
+      gluestackDeps
+    );
+    parentExactDependencyList = getExactDependenciesFromNodeModules(
+      workspaceRoot
+    );
   }
 
   let gluestackUITranspileModules = Array.from(
     new Set([
-      'react-native',
-      'react-native-web',
-      // '@dank-style/react',
-      // '@dank-style/animation-plugin',
-      // '@dank-style/css-injector',
-      // '@legendapp/motion',
-      '@gluestack/ui-next-adapter',
       ...rootDependencyList,
       ...parentDependencyList,
+      ...rootExactDependencyList,
+      ...parentExactDependencyList,
       ...(nextConfig.transpilePackages || []),
     ])
   );
