@@ -40,6 +40,15 @@ const getExactDependenciesFromNodeModules = (
   return dependencyList;
 };
 
+function startsWithAny(string: any, array: any) {
+  for (let i = 0; i < array.length; i++) {
+    if (string.startsWith(array[i])) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const getDependenciesFromNodeModules = (
   dir: any,
   nodeModulePackages: any = []
@@ -57,7 +66,14 @@ const getDependenciesFromNodeModules = (
         traverse(filePath);
       } else if (stat.isFile() && file === 'package.json') {
         const packageJson = require(filePath);
-        myDependencies.set(packageJson.name, packageJson.dependencies || {});
+
+        if (
+          packageJson.name &&
+          startsWithAny(packageJson.name, nodeModulePackages)
+        ) {
+          //TODO: add dependencies if needed
+          myDependencies.set(packageJson.name, {});
+        }
       }
     }
   };

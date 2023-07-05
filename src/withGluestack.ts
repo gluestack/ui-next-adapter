@@ -51,6 +51,22 @@ export default function withGluestackUI(nextConfig: any = {}) {
     );
   }
 
+  // if (metaWorkspace.isWorkspace) {
+  //   parentDependencyList = getDependenciesFromNodeModules(
+  //     path.resolve(currDir, '..'),
+  //     ['@gluestack-ui', '@react-native-aria']
+  //   );
+  // }
+
+  // if (workspaceRoot) {
+  //   parentDependencyList = getDependenciesFromNodeModules(workspaceRoot, [
+  //     '@gluestack-ui',
+  //     '@react-native-aria',
+  //     '@legendapp',
+  //     '@expo/html-elements',
+  //     'gluestack',
+  //   ]);
+  // }
   if (workspaceRoot) {
     parentDependencyList = getDependenciesFromNodeModules(
       workspaceRoot,
