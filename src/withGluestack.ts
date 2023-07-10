@@ -23,11 +23,10 @@ const reactNativeDeps = [
 
 export default function withGluestackUI(nextConfig: any = {}) {
   const currDir = process.cwd();
-
-  const rootDependencyList = getDependenciesFromNodeModules(
-    currDir,
-    gluestackDeps
-  );
+  let rootDependencyList = [];
+  try {
+    rootDependencyList = getDependenciesFromNodeModules(currDir, gluestackDeps);
+  } catch (e) {}
 
   const rootExactDependencyList = getExactDependenciesFromNodeModules(
     currDir,
