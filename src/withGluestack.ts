@@ -28,10 +28,13 @@ export default function withGluestackUI(nextConfig: any = {}) {
     rootDependencyList = getDependenciesFromNodeModules(currDir, gluestackDeps);
   } catch (e) {}
 
-  const rootExactDependencyList = getExactDependenciesFromNodeModules(
-    currDir,
-    reactNativeDeps
-  );
+  let rootExactDependencyList = [];
+  try {
+    rootExactDependencyList = getExactDependenciesFromNodeModules(
+      currDir,
+      reactNativeDeps
+    );
+  } catch (e) {}
 
   const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
   const metaWorkspace = checkIfWorkspace(currDir);
@@ -40,14 +43,16 @@ export default function withGluestackUI(nextConfig: any = {}) {
   let parentExactDependencyList = [];
 
   if (metaWorkspace.isWorkspace) {
-    parentDependencyList = getDependenciesFromNodeModules(
-      path.resolve(currDir, '..'),
-      gluestackDeps
-    );
-    parentExactDependencyList = getExactDependenciesFromNodeModules(
-      path.resolve(currDir, '..'),
-      reactNativeDeps
-    );
+    try {
+      parentDependencyList = getDependenciesFromNodeModules(
+        path.resolve(currDir, '..'),
+        gluestackDeps
+      );
+      parentExactDependencyList = getExactDependenciesFromNodeModules(
+        path.resolve(currDir, '..'),
+        reactNativeDeps
+      );
+    } catch (e) {}
   }
 
   // if (metaWorkspace.isWorkspace) {
@@ -67,13 +72,15 @@ export default function withGluestackUI(nextConfig: any = {}) {
   //   ]);
   // }
   if (workspaceRoot) {
-    parentDependencyList = getDependenciesFromNodeModules(
-      workspaceRoot,
-      gluestackDeps
-    );
-    parentExactDependencyList = getExactDependenciesFromNodeModules(
-      workspaceRoot
-    );
+    try {
+      parentDependencyList = getDependenciesFromNodeModules(
+        workspaceRoot,
+        gluestackDeps
+      );
+      parentExactDependencyList = getExactDependenciesFromNodeModules(
+        workspaceRoot
+      );
+    } catch (e) {}
   }
 
   let gluestackUITranspileModules = Array.from(
