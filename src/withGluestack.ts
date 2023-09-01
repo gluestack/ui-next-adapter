@@ -13,6 +13,7 @@ const gluestackDeps = [
   '@gluestack',
   '@expo',
   '@legendapp',
+  'expo-',
 ];
 
 const reactNativeDeps = [
