@@ -103,22 +103,32 @@ const getDependenciesFromNodeModules = (
 };
 
 const checkIfWorkspace = (currDir: any) => {
-  const parentFiles = fs.readdirSync(path.resolve(currDir, '..'));
+  return checkIfWorkspaceRecursively(currDir);
+};
+
+const checkIfWorkspaceRecursively: any = (currDir: any) => {
+  const parentFiles = fs.readdirSync(currDir);
   const metadata: any = {};
 
   if (parentFiles.includes('package.json')) {
-    const parentPackageJson = require(path.resolve(
-      currDir,
-      '..',
-      'package.json'
-    ));
+    const parentPackageJson = require(path.resolve(currDir, 'package.json'));
 
     const workspaces = parentPackageJson.workspaces;
     if (workspaces) {
       metadata['isWorkspace'] = true;
       metadata['workspaces'] = workspaces;
+      metadata['workspacePath'] = currDir;
     }
   }
+
+  const parentDir = path.resolve(currDir, '..');
+  if (parentDir !== currDir) {
+    const parentMetadata = checkIfWorkspaceRecursively(parentDir);
+    if (parentMetadata.isWorkspace) {
+      return parentMetadata;
+    }
+  }
+
   return metadata;
 };
 

@@ -4,7 +4,6 @@ import {
   getExactDependenciesFromNodeModules,
 } from './utils';
 const findWorkspaceRoot = require('find-yarn-workspace-root');
-const path = require('path');
 
 const gluestackDeps = [
   '@gluestack-ui',
@@ -39,18 +38,17 @@ export default function withGluestackUI(nextConfig: any = {}) {
 
   const workspaceRoot = findWorkspaceRoot(currDir); // Absolute path or null
   const metaWorkspace = checkIfWorkspace(currDir);
-
   let parentDependencyList = [];
   let parentExactDependencyList = [];
 
   if (metaWorkspace.isWorkspace) {
     try {
       parentDependencyList = getDependenciesFromNodeModules(
-        path.resolve(currDir, '..'),
+        metaWorkspace.workspacePath,
         gluestackDeps
       );
       parentExactDependencyList = getExactDependenciesFromNodeModules(
-        path.resolve(currDir, '..'),
+        metaWorkspace.workspacePath,
         reactNativeDeps
       );
     } catch (e) {}
@@ -79,11 +77,11 @@ export default function withGluestackUI(nextConfig: any = {}) {
         gluestackDeps
       );
       parentExactDependencyList = getExactDependenciesFromNodeModules(
-        workspaceRoot
+        workspaceRoot,
+        reactNativeDeps
       );
     } catch (e) {}
   }
-
   let gluestackUITranspileModules = Array.from(
     new Set([
       ...rootDependencyList,
