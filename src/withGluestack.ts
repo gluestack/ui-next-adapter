@@ -5,6 +5,8 @@ import {
 } from './utils';
 const findWorkspaceRoot = require('find-yarn-workspace-root');
 
+const {DefinePlugin} = require("webpack")
+
 const gluestackDeps = [
   '@gluestack-ui',
   '@react-native-aria',
@@ -114,6 +116,12 @@ export default function withGluestackUI(nextConfig: any = {}) {
         test: /\.ttf$/,
         loader: 'url-loader',
       });
+
+      config.plugins.push(
+        new DefinePlugin({
+          __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
+        })
+      );
 
       return config;
     },
