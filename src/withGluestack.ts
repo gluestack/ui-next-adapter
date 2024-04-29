@@ -107,6 +107,7 @@ export default function withGluestackUI(nextConfig: any = {}) {
         '.web.js',
         '.web.ts',
         '.web.tsx',
+        '.web.jsx',
         ...config.resolve.extensions,
       ];
 
